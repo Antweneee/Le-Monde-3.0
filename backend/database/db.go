@@ -1,11 +1,11 @@
-package main
+package databaseInteraction
 
 import (
-	"fmt"
+	// "fmt"
 	"log"
 	"gorm.io/gorm"
 	"gorm.io/driver/sqlite"
-	// "github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin"
 	"time"
   )
 
@@ -201,29 +201,25 @@ func DeleteTopic(db *gorm.DB, topicID uint) error {
 	return nil
 }
 
-
-// c *gin.Context
-
-func main() {
+func databaseInteraction(c *gin.Context) {
 	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
 	if err != nil {
 		log.Fatal("failed to connect database:", err)
 	}
 
 	db.AutoMigrate(&User{}, &Article{}, &Like{}, &Bookmark{}, &Topic{})
-
-	user := User{
-		id: 1,
-		email: "test@gmail.com",
-		username: "testurname",
-		password: "pswrd",
-		written_articles: nil,
-		liked_articles: nil,
-		bookmarks: nil,
-	}
-	err = AddUser(db, user)
-	if err != nil {
-		log.Fatal("failed to add user:", err)
-	}
-	fmt.Println("User added successfully!")
 }
+// user := User{
+// 	id: 1,
+// 	email: "test@gmail.com",
+// 	username: "testurname",
+// 	password: "pswrd",
+// 	written_articles: nil,
+// 	liked_articles: nil,
+// 	bookmarks: nil,
+// }
+// err = AddUser(db, user)
+// if err != nil {
+// 	log.Fatal("failed to add user:", err)
+// }
+// fmt.Println("User added successfully!")
