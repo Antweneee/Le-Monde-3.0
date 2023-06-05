@@ -20,5 +20,9 @@ func Router() *gin.Engine {
 
 	r.POST("/database/addUser", db.AddUser)
 
+	r.POST("/database/updateUser", db.UpdateUser)
+
+	r.DELETE("/database/deleteUser", db.DeleteUser)
+
 	return r
 }
