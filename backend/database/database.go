@@ -10,44 +10,46 @@ import (
 
 type User struct {
 	gorm.Model
-	email string
-	username string
-	password string
-	written_articles []Article
-	liked_articles []Like
-	bookmarks []Bookmark
+	Id uint
+	Email string
+	Username string
+	Password string
+	Written_articles []Article
+	Liked_articles []Like
+	Bookmarks []Bookmark
 }
 
 type Article struct {
 	gorm.Model
-	id uint
-	user_id uint
-	title string
-	cid string
-	data time.Time
-	topic Topic
-	likes []Like
+	Id uint
+	User_id uint
+	Title string
+	Cid string
+	Data time.Time
+	Topic Topic
+	Likes []Like
 }
 
 type Like struct {
 	gorm.Model
-	id uint
-	user_id uint
-	articles_id uint
+	Id uint
+	User_id uint
+	Articles_id uint
 }
 
 type Bookmark struct {
 	gorm.Model
-	id uint
-	name string
-	description string
-	user_id uint
-	articles []Article
+	Id uint
+	Name string
+	Description string
+	User_id uint
+	Articles []Article
 }
 
 type Topic struct {
 	gorm.Model
-	name string
+	Id uint
+	Name string
 }
 
 // * AddUser adds a user to the database.
@@ -90,6 +92,46 @@ func UpdateUser(db *gorm.DB, user User) error {
 	return nil
 }
 
+// * AddArticle adds a article to the database.
+// * It takes a gorm.DB instance and a article parameter representing the Article object to be added.
+// * It returns an error if the operation fails, or nil if successful.
+func AddArticle(db *gorm.DB, article Article) error {
+	result := db.Create(&article)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+// * DeleteArticle deletes a article from the database based on the given articleID.
+// * It takes a gorm.DB instance and a articleID parameter representing the ID of the article to be deleted.
+// * It returns an error if the deletion fails, or nil if successful.
+func DeleteArticle(db *gorm.DB, articleID uint) error {
+	var article Article
+	result := db.First(&article, articleID)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	result = db.Delete(&article)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
+// * UpdateArticle updates a article in the database.
+// * It takes a gorm.DB instance and a article parameter representing the updated Article object.
+// * It returns an error if the operation fails, or nil if successful.
+func UpdateArticle(db *gorm.DB, article Article) error {
+	result := db.Save(&article)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
 // * AddLike adds a like to the database.
 // * It takes a gorm.DB instance and a like parameter representing the Like object to be added.
 // * It returns an error if the operation fails, or nil if successful.
@@ -116,6 +158,17 @@ func DeleteLike(db *gorm.DB, likeID uint) error {
 		return result.Error
 	}
 
+	return nil
+}
+
+// * UpdateLike updates a Like in the database.
+// * It takes a gorm.DB instance and a Like parameter representing the updated Like object.
+// * It returns an error if the operation fails, or nil if successful.
+func UpdateLike(db *gorm.DB, like Like) error {
+	result := db.Save(&like)
+	if result.Error != nil {
+		return result.Error
+	}
 	return nil
 }
 
