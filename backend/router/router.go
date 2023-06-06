@@ -2,13 +2,14 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	a "backend/router/addArticle"
 	d "backend/router/deleteArticle"
 	g "backend/router/getArticle"
-	db "backend/router/dbInteraction"
+	dbService "backend/router/dbInteraction"
 )
 
-func Router() *gin.Engine {
+func Router(db *gorm.DB) *gin.Engine {
 	
 	r := gin.Default()
 
@@ -20,42 +21,72 @@ func Router() *gin.Engine {
 
 	// DB User routes
 
-	r.POST("/database/addUser", db.AddUser)
+	r.POST("/database/addUser", func(c *gin.Context) {
+		dbService.AddUser(c, db)
+	})
 
-	r.POST("/database/updateUser", db.UpdateUser)
+	r.POST("/database/updateUser", func(c *gin.Context) {
+		dbService.UpdateUser(c, db)
+	})
 
-	r.DELETE("/database/deleteUser", db.DeleteUser)
+	r.DELETE("/database/deleteUser", func(c *gin.Context) {
+		dbService.DeleteUser(c, db)
+	})
 
 	// DB Article routes
 
-	r.POST("/database/addArticle", db.AddArticle)
+	r.POST("/database/addArticle", func(c *gin.Context) {
+		dbService.AddArticle(c, db)
+	})
 
-	r.POST("/database/updateArticle", db.UpdateArticle)
+	r.POST("/database/updateArticle", func(c *gin.Context) {
+		dbService.UpdateArticle(c, db)
+	})
 
-	r.DELETE("/database/deleteArticle", db.DeleteArticle)
+	r.DELETE("/database/deleteArticle", func(c *gin.Context) {
+		dbService.DeleteArticle(c, db)
+	})
 
 	// DB Like routes
 
-	r.POST("/database/addLike", db.AddLike)
+	r.POST("/database/addLike", func(c *gin.Context) {
+		dbService.AddLike(c, db)
+	})
 
-	r.POST("/database/UpdateLike", db.UpdateLike)
+	r.POST("/database/UpdateLike", func(c *gin.Context) {
+		dbService.UpdateLike(c, db)
+	})
 
-	r.DELETE("/database/deleteLike", db.DeleteLike)
+	r.DELETE("/database/deleteLike", func(c *gin.Context) {
+		dbService.DeleteLike(c, db)
+	})
 
 	// DB Bookmark routes
 
-	r.POST("/database/addBookmark", db.AddBookmark)
+	r.POST("/database/addBookmark", func(c *gin.Context) {
+		dbService.AddBookmark(c, db)
+	})
 
-	r.POST("/database/updateBookmark", db.UpdateBookmark)
+	r.POST("/database/updateBookmark", func(c *gin.Context) {
+		dbService.UpdateBookmark(c, db)
+	})
 
-	r.DELETE("/database/deleteBookmark", db.DeleteBookmark)
+	r.DELETE("/database/deleteBookmark", func(c *gin.Context) {
+		dbService.DeleteBookmark(c, db)
+	})
 
 	// DB Topic routes
 
-	r.POST("/database/addTopic", db.AddTopic)
+	r.POST("/database/addTopic", func(c *gin.Context) {
+		dbService.AddTopic(c, db)
+	})
 
-	r.POST("/database/updateTopic", db.UpdateTopic)
+	r.POST("/database/updateTopic", func(c *gin.Context) {
+		dbService.UpdateTopic(c, db)
+	})
 
-	r.DELETE("/database/deleteTopic", db.DeleteTopic)
+	r.DELETE("/database/deleteTopic", func(c *gin.Context) {
+		dbService.DeleteTopic(c, db)
+	})
 	return r
 }

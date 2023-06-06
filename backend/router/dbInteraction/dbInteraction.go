@@ -1,14 +1,14 @@
 package dbInteraction
 
 import (
+	"gorm.io/gorm"
+	"net/http"
     "github.com/gin-gonic/gin"
 	"backend/database"
-	"net/http"
 )
 
-func AddUser(c *gin.Context) {
+func AddUser(c *gin.Context, db *gorm.DB) {
 	var user database.User
-	var db = database.DatabaseInteraction()
 
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -22,9 +22,8 @@ func AddUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"Created" : "User created successfully"})
 }
 
-func DeleteUser(c *gin.Context) {
+func DeleteUser(c *gin.Context, db *gorm.DB) {
 	var user database.User;
-	var db = database.DatabaseInteraction()
 
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -39,9 +38,8 @@ func DeleteUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"delete" : "User deleted successfully"})
 }
 
-func UpdateUser(c *gin.Context) {
+func UpdateUser(c *gin.Context, db *gorm.DB) {
 	var user database.User;
-	var db = database.DatabaseInteraction()
 
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -56,9 +54,8 @@ func UpdateUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"Update" : "User updated successfully"})
 }
 
-func AddArticle(c *gin.Context) {
+func AddArticle(c *gin.Context, db *gorm.DB) {
 	var article database.Article
-	var db = database.DatabaseInteraction()
 
 	if err := c.ShouldBindJSON(&article); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -73,9 +70,8 @@ func AddArticle(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"Created" : "Article created successfully"})
 }
 
-func DeleteArticle(c *gin.Context) {
+func DeleteArticle(c *gin.Context, db *gorm.DB) {
 	var article database.Article;
-	var db = database.DatabaseInteraction()
 
 	if err := c.ShouldBindJSON(&article); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -91,9 +87,8 @@ func DeleteArticle(c *gin.Context) {
     return
 }
 
-func UpdateArticle(c *gin.Context) {
+func UpdateArticle(c *gin.Context, db *gorm.DB) {
 	var article database.Article;
-	var db = database.DatabaseInteraction()
 
 	if err := c.ShouldBindJSON(&article); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -109,9 +104,8 @@ func UpdateArticle(c *gin.Context) {
     return
 }
 
-func AddLike(c *gin.Context) {
+func AddLike(c *gin.Context, db *gorm.DB) {
 	var like database.Like
-	var db = database.DatabaseInteraction()
 
 	if err := c.ShouldBindJSON(&like); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -126,9 +120,8 @@ func AddLike(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"Created" : "Like created successfully"})
 }
 
-func DeleteLike(c *gin.Context) {
+func DeleteLike(c *gin.Context, db *gorm.DB) {
 	var like database.Like;
-	var db = database.DatabaseInteraction()
 
 	if err := c.ShouldBindJSON(&like); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -144,9 +137,8 @@ func DeleteLike(c *gin.Context) {
     return
 }
 
-func UpdateLike(c *gin.Context) {
+func UpdateLike(c *gin.Context, db *gorm.DB) {
 	var like database.Like;
-	var db = database.DatabaseInteraction()
 
 	if err := c.ShouldBindJSON(&like); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -162,9 +154,8 @@ func UpdateLike(c *gin.Context) {
     return
 }
 
-func AddBookmark(c *gin.Context) {
+func AddBookmark(c *gin.Context, db *gorm.DB) {
 	var bookmark database.Bookmark
-	var db = database.DatabaseInteraction()
 
 	if err := c.ShouldBindJSON(&bookmark); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -179,9 +170,8 @@ func AddBookmark(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"Created" : "Bookmark created successfully"})
 }
 
-func DeleteBookmark(c *gin.Context) {
+func DeleteBookmark(c *gin.Context, db *gorm.DB) {
 	var bookmark database.Bookmark
-	var db = database.DatabaseInteraction()
 
 	if err := c.ShouldBindJSON(&bookmark); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -197,9 +187,8 @@ func DeleteBookmark(c *gin.Context) {
     return
 }
 
-func UpdateBookmark(c *gin.Context) {
+func UpdateBookmark(c *gin.Context, db *gorm.DB) {
 	var bookmark database.Bookmark
-	var db = database.DatabaseInteraction()
 
 	if err := c.ShouldBindJSON(&bookmark); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -215,9 +204,8 @@ func UpdateBookmark(c *gin.Context) {
     return
 }
 
-func AddTopic(c *gin.Context) {
+func AddTopic(c *gin.Context, db *gorm.DB) {
 	var topic database.Topic
-	var db = database.DatabaseInteraction()
 
 	if err := c.ShouldBindJSON(&topic); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -232,9 +220,8 @@ func AddTopic(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"Created" : "Topic created successfully"})
 }
 
-func DeleteTopic(c *gin.Context) {
+func DeleteTopic(c *gin.Context, db *gorm.DB) {
 	var topic database.Topic
-	var db = database.DatabaseInteraction()
 
 	if err := c.ShouldBindJSON(&topic); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -250,9 +237,8 @@ func DeleteTopic(c *gin.Context) {
     return
 }
 
-func UpdateTopic(c *gin.Context) {
+func UpdateTopic(c *gin.Context, db *gorm.DB) {
 	var topic database.Topic
-	var db = database.DatabaseInteraction()
 
 	if err := c.ShouldBindJSON(&topic); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

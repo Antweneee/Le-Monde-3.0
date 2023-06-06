@@ -2,9 +2,12 @@ package main
 
 import (
 	r "backend/router"
+	db "backend/database"
 )
 
 func main() {
-	r := r.Router()
+	var database = db.DatabaseInteraction()
+
+	r := r.Router(database)
 	r.Run()
 }
