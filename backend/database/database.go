@@ -12,7 +12,9 @@ type Like struct {
 	gorm.Model
 	Id uint
 	UserId uint
+	User User
 	ArticlesId uint
+	Article Article
 }
 
 type Topic struct {
@@ -30,6 +32,7 @@ type Article struct {
 	Cid string
 	Data time.Time
 	ArticleTopic Topic
+	Topic Topic
 	ArticleLikes []Like
 }
 
@@ -39,6 +42,7 @@ type Bookmark struct {
 	Name string
 	Description string
 	UserId uint
+	User User
 	BookmarkArticles []Article
 }
 
