@@ -228,7 +228,7 @@ func DeleteTopic(c *gin.Context, db *gorm.DB) {
 		return
 	}
 
-	err := database.DeleteTopic(db, topic.Id)
+	err := database.DeleteTopic(db, topic.Name)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
         return

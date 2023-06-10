@@ -8,33 +8,29 @@ import (
 	"time"
   )
 
-type User struct {
+type Like struct {
 	gorm.Model
 	Id uint
-	Email string
-	Username string
-	Password string
-	Written_articles []Article
-	Liked_articles []Like
-	Bookmarks []Bookmark
+	UserId uint
+	ArticlesId uint
+}
+
+type Topic struct {
+	gorm.Model
+	Id uint
+	Name string
 }
 
 type Article struct {
 	gorm.Model
 	Id uint
-	User_id uint
+	UserId uint
+	User User
 	Title string
 	Cid string
 	Data time.Time
-	Topic Topic
-	Likes []Like
-}
-
-type Like struct {
-	gorm.Model
-	Id uint
-	User_id uint
-	Articles_id uint
+	ArticleTopic Topic
+	ArticleLikes []Like
 }
 
 type Bookmark struct {
@@ -42,14 +38,19 @@ type Bookmark struct {
 	Id uint
 	Name string
 	Description string
-	User_id uint
-	Articles []Article
+	UserId uint
+	BookmarkArticles []Article
 }
 
-type Topic struct {
+type User struct {
 	gorm.Model
 	Id uint
-	Name string
+	Email string
+	Username string
+	Password string
+	WrittenArticles []Article
+	LikedArticles []Like
+	Bookmarks []Bookmark
 }
 
 // * AddUser adds a user to the database.
@@ -237,9 +238,9 @@ func UpdateTopic(db *gorm.DB, topic Topic) error {
 // * DeleteTopic deletes a topic from the database based on the given topicID.
 // * It takes a gorm.DB instance and a topicID parameter representing the ID of the topic to be deleted.
 // * It returns an error if the deletion fails, or nil if successful.
-func DeleteTopic(db *gorm.DB, topicID uint) error {
+func DeleteTopic(db *gorm.DB, topicName string) error {
 	var topic Topic
-	result := db.First(&topic, topicID)
+	result := db.First(&topic, topicName)
 	if result.Error != nil {
 		return result.Error
 	}
