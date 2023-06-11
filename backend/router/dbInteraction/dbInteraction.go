@@ -5,251 +5,200 @@ import (
 	"net/http"
     "github.com/gin-gonic/gin"
 	"backend/database"
+	"errors"
 )
 
-func AddUser(c *gin.Context, db *gorm.DB) {
-	var user database.User
+type ReceiveUser struct {
+    Email string `json:"email"`
+}
 
-	if err := c.ShouldBindJSON(&user); err != nil {
+func AddUser(c *gin.Context, db *gorm.DB) {
+	user := new(database.User);
+
+	if err := c.Bind(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	err := database.AddUser(db, user)
-	if (err != nil) {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+	result := db.Create(&user)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": result.Error})
+	} else {
+		c.JSON(http.StatusCreated, gin.H{"Created" : "User created successfully"})
+	}
+}
+
+func GetUser(c *gin.Context, db *gorm.DB) {
+	user := new(database.User);
+
+	if err := c.Bind(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusCreated, gin.H{"Created" : "User created successfully"})
+
+	email := c.Query("email")
+	result := db.Where(database.User{Email: email}).Find(&user)
+	if result.Error != nil {
+        if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+            c.JSON(http.StatusNotFound, gin.H{"error": result.Error})
+        }
+        c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error})
+    } else if user.Id == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "user not found"})
+	} else {
+		c.JSON(http.StatusOK, user)
+	}
 }
 
 func DeleteUser(c *gin.Context, db *gorm.DB) {
-	var user database.User;
+	user := new(database.User);
 
-	if err := c.ShouldBindJSON(&user); err != nil {
+	if err := c.Bind(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	err := database.DeleteUser(db, user.Id);
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
-        return
+	email := c.Query("email")
+	res := db.Where(database.User{Email: email}).Find(&user)
+	if res.Error != nil {
+        if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+            c.JSON(http.StatusNotFound, gin.H{"error": res.Error})
+			return
+        }
+        c.JSON(http.StatusInternalServerError, gin.H{"error": res.Error})
+		return
     }
-	c.JSON(http.StatusOK, gin.H{"delete" : "User deleted successfully"})
-}
-
-func UpdateUser(c *gin.Context, db *gorm.DB) {
-	var user database.User;
-
-	if err := c.ShouldBindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if user.Id == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "user not found"})
 		return
 	}
 
-	err := database.UpdateUser(db, user)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
-        return
-    }
-	c.JSON(http.StatusOK, gin.H{"Update" : "User updated successfully"})
+	id := user.Id
+	condition := database.User{Id: id}
+
+    result := db.Delete(&condition)
+    if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error})
+    } else {
+		c.JSON(http.StatusOK, gin.H{"delete" : "User deleted successfully"})
+	}
 }
 
 func AddArticle(c *gin.Context, db *gorm.DB) {
-	var article database.Article
+	article := new(database.Article)
 
-	if err := c.ShouldBindJSON(&article); err != nil {
+	if err := c.Bind(&article); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	err := database.AddArticle(db, article)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
-        return
+	result := db.Create(&article)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": result.Error})
+		return
 	}
 	c.JSON(http.StatusCreated, gin.H{"Created" : "Article created successfully"})
 }
 
-func DeleteArticle(c *gin.Context, db *gorm.DB) {
-	var article database.Article;
+func GetArticle(c *gin.Context, db *gorm.DB) {
+	article := new(database.Article);
 
-	if err := c.ShouldBindJSON(&article); err != nil {
+	if err := c.Bind(&article); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	err := database.DeleteArticle(db, article.Id)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
-        return
-    }
-	c.JSON(http.StatusOK, gin.H{"delete" : "Article deleted successfully"})
-    return
+	cid := c.Query("cid")
+	result := db.Where(database.Article{Cid: cid}).Find(&article)
+	if result.Error != nil {
+        if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+            c.JSON(http.StatusNotFound, gin.H{"error": result.Error})
+			return
+        }
+        c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error})
+		return
+    } else if article.Id == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "article not found"})
+		return
+	} else {
+		c.JSON(http.StatusOK, article)
+		return
+	}
 }
 
-func UpdateArticle(c *gin.Context, db *gorm.DB) {
-	var article database.Article;
+func DeleteArticle(c *gin.Context, db *gorm.DB) {
+	article := new(database.Article);
 
-	if err := c.ShouldBindJSON(&article); err != nil {
+	if err := c.Bind(&article); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	err := database.UpdateArticle(db, article)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
-        return
+	cid := c.Query("cid")
+	res := db.Where(database.Article{Cid: cid}).Find(&article)
+	if res.Error != nil {
+        if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+            c.JSON(http.StatusNotFound, gin.H{"error": res.Error})
+			return
+        }
+        c.JSON(http.StatusInternalServerError, gin.H{"error": res.Error})
+		return
     }
-	c.JSON(http.StatusOK, gin.H{"Update" : "Article updated successfully"})
-    return
+	if article.Id == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "article not found"})
+		return
+	}
+
+	id := article.Id
+	condition := database.Article{Id: id}
+
+    result := db.Delete(&condition)
+    if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error})
+    } else {
+		c.JSON(http.StatusOK, gin.H{"delete" : "Article deleted successfully"})
+	}
 }
 
 func AddLike(c *gin.Context, db *gorm.DB) {
-	var like database.Like
+	like := new(database.Like)
 
-	if err := c.ShouldBindJSON(&like); err != nil {
+	if err := c.Bind(&like); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	err := database.AddLike(db, like)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
-        return
+	result := db.Create(&like)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": result.Error})
+		return
 	}
 	c.JSON(http.StatusCreated, gin.H{"Created" : "Like created successfully"})
 }
 
-func DeleteLike(c *gin.Context, db *gorm.DB) {
-	var like database.Like;
-
-	if err := c.ShouldBindJSON(&like); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	err := database.DeleteLike(db, like.Id)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
-        return
-    }
-	c.JSON(http.StatusOK, gin.H{"delete" : "Like deleted successfully"})
-    return
-}
-
-func UpdateLike(c *gin.Context, db *gorm.DB) {
-	var like database.Like;
-
-	if err := c.ShouldBindJSON(&like); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	err := database.UpdateLike(db, like)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
-        return
-    }
-	c.JSON(http.StatusOK, gin.H{"Update" : "Like updated successfully"})
-    return
-}
-
 func AddBookmark(c *gin.Context, db *gorm.DB) {
-	var bookmark database.Bookmark
+	bookmark := new(database.Bookmark)
 
-	if err := c.ShouldBindJSON(&bookmark); err != nil {
+	if err := c.Bind(&bookmark); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	err := database.AddBookmark(db, bookmark)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
-        return
+	result := db.Create(&bookmark)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": result.Error})
+		return
 	}
 	c.JSON(http.StatusCreated, gin.H{"Created" : "Bookmark created successfully"})
 }
 
-func DeleteBookmark(c *gin.Context, db *gorm.DB) {
-	var bookmark database.Bookmark
-
-	if err := c.ShouldBindJSON(&bookmark); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	err := database.DeleteBookmark(db, bookmark.Id)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
-        return
-    }
-	c.JSON(http.StatusOK, gin.H{"delete" : "Bookmark deleted successfully"})
-    return
-}
-
-func UpdateBookmark(c *gin.Context, db *gorm.DB) {
-	var bookmark database.Bookmark
-
-	if err := c.ShouldBindJSON(&bookmark); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	err := database.UpdateBookmark(db, bookmark)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
-        return
-    }
-	c.JSON(http.StatusOK, gin.H{"Update" : "Bookmark updated successfully"})
-    return
-}
-
 func AddTopic(c *gin.Context, db *gorm.DB) {
-	var topic database.Topic
+	topic := new(database.Topic)
 
-	if err := c.ShouldBindJSON(&topic); err != nil {
+	if err := c.Bind(&topic); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	err := database.AddTopic(db, topic)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
-        return
+	result := db.Create(&topic)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": result.Error})
+		return
 	}
 	c.JSON(http.StatusCreated, gin.H{"Created" : "Topic created successfully"})
-}
-
-func DeleteTopic(c *gin.Context, db *gorm.DB) {
-	var topic database.Topic
-
-	if err := c.ShouldBindJSON(&topic); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	err := database.DeleteTopic(db, topic.Name)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
-        return
-    }
-	c.JSON(http.StatusOK, gin.H{"delete" : "Topix deleted successfully"})
-    return
-}
-
-func UpdateTopic(c *gin.Context, db *gorm.DB) {
-	var topic database.Topic
-
-	if err := c.ShouldBindJSON(&topic); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	err := database.UpdateTopic(db, topic)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
-        return
-    }
-	c.JSON(http.StatusOK, gin.H{"Update" : "Topic updated successfully"})
-    return
 }
