@@ -1,5 +1,11 @@
 const text = {
 	variants: {
+		link: {
+			fontSize: '16px',
+			fontWeight: 'regular',
+			fontFamily: 'Poppins',
+			color: 'black',
+		},
 		p: {
 			fontSize: '16px',
 			fontWeight: 'regular',
