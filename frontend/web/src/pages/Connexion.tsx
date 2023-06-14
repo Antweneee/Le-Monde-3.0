@@ -8,8 +8,8 @@ const Connexion = (): JSX.Element => {
 	return (
 		<>
 			<Input variant="primary-1" placeholder="e-mail ou nom d'utilisateur" />
-			<Input variant="primary-1" placeholder="mot de passe" />
-			<Button variant="primary-1" onClick={() => navigate('/dashboard')}>
+			<Input variant="primary-1" placeholder="mot de passe" type="password" />
+			<Button variant="primary-1" onClick={() => navigate('/favoris')}>
 				Connexion
 			</Button>
 			<Link as={RouteLink} to="/inscription" w="100%">

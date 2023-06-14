@@ -1,8 +1,11 @@
 import * as React from 'react';
 import PrivateLayout from 'layouts/Private';
+import { Outlet } from 'react-router-dom';
 
-type PrivateProps = { children: JSX.Element };
-
-const Private = ({ children }: PrivateProps): JSX.Element => <PrivateLayout>{children}</PrivateLayout>;
+const Private = (): JSX.Element => (
+	<PrivateLayout>
+		<Outlet />
+	</PrivateLayout>
+);
 
 export default Private;

@@ -9,9 +9,9 @@ const Inscription = (): JSX.Element => {
 		<>
 			<Input variant="primary-1" placeholder="e-mail" />
 			<Input variant="primary-1" placeholder="nom d'utilisateur" />
-			<Input variant="primary-1" placeholder="mot de passe" />
-			<Input variant="primary-1" placeholder="confirmation du mot de passe" />
-			<Button variant="primary-1" onClick={() => navigate('/dashboard')}>
+			<Input variant="primary-1" placeholder="mot de passe" type="password" />
+			<Input variant="primary-1" placeholder="confirmation du mot de passe" type="password" />
+			<Button variant="primary-1" onClick={() => navigate('/favoris')}>
 				Inscription
 			</Button>
 			<Link as={RouteLink} to="/connexion" w="100%">

@@ -6,15 +6,37 @@ import PrivateRoute from './Private';
 import HomePage from 'pages/Home';
 import ConnexionPage from 'pages/Connexion';
 import InscriptionPage from 'pages/Inscription';
-import Dashboard from 'pages/Dashboard';
+import Favoris from 'pages/Favoris';
+import MarquePages from 'pages/MarquePages';
+import Nouveautes from 'pages/Nouveautes';
+import Decouvertes from 'pages/Decouvertes';
+import NouvelArticle from 'pages/NouvelArticle';
+import Publications from 'pages/Publications';
+import Brouillons from 'pages/Brouillons';
+import Statistiques from 'pages/Statistiques';
+import Reglages from 'pages/Reglages';
+import Deconnexion from 'pages/Deconnexion';
 
 const Routes = (): JSX.Element => (
 	<BrowserRouter>
 		<RouterRoutes>
-			<Route path="/" element={<AuthRoute children={<HomePage />} />} />
-			<Route path="/inscription" element={<AuthRoute children={<InscriptionPage />} />} />
-			<Route path="/connexion" element={<AuthRoute children={<ConnexionPage />} />} />
-			<Route path="/dashboard" element={<PrivateRoute children={<Dashboard />} />} />
+			<Route path="/" element={<AuthRoute />}>
+				<Route path="/" element={<HomePage />} />
+				<Route path="/inscription" element={<InscriptionPage />} />
+				<Route path="/connexion" element={<ConnexionPage />} />
+			</Route>
+			<Route path="/" element={<PrivateRoute />}>
+				<Route path="/favoris" element={<Favoris />} />
+				<Route path="/marque-pages" element={<MarquePages />} />
+				<Route path="/nouveautes" element={<Nouveautes />} />
+				<Route path="/decouvertes" element={<Decouvertes />} />
+				<Route path="/nouvel-article" element={<NouvelArticle />} />
+				<Route path="/publications" element={<Publications />} />
+				<Route path="/brouillons" element={<Brouillons />} />
+				<Route path="/statistiques" element={<Statistiques />} />
+				<Route path="/reglages" element={<Reglages />} />
+				<Route path="/deconnexion" element={<Deconnexion />} />
+			</Route>
 			<Route path="*" element={<Navigate replace to="/" />} />
 		</RouterRoutes>
 	</BrowserRouter>

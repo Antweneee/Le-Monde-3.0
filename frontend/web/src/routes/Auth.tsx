@@ -1,8 +1,11 @@
 import * as React from 'react';
 import AuthLayout from 'layouts/Auth';
+import { Outlet } from 'react-router-dom';
 
-type AuthProps = { children: JSX.Element };
-
-const Auth = ({ children }: AuthProps): JSX.Element => <AuthLayout>{children}</AuthLayout>;
+const Auth = (): JSX.Element => (
+	<AuthLayout>
+		<Outlet />
+	</AuthLayout>
+);
 
 export default Auth;
