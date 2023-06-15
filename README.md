@@ -5,6 +5,7 @@ Repository for Le Monde 3.0 project.
 
 ```shell
 cd le-monde-3.0
+npm i
 npm start
 ```
 
