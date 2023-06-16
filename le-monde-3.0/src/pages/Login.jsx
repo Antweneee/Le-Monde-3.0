@@ -11,8 +11,27 @@ function Login() {
 
     async function login() {
       const user_email = document.getElementById("email")
-      console.log(user_email)
-      //const apiData = await axios.get("http://localhost:8080/database/User", {params: {email: user_email.value}})
+      console.log(user_email.value)
+
+      const apiData = await axios.get("http://localhost:8080/api/admin/database/User",
+      {
+        headers: {
+          Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2ODY5MjEwNDcsInVzZXJfaWQiOjB9.1QD5509nEYHxEW5tmavmQG9tCvnN3vlzd06VOXbfR80'
+        },
+        params: {
+          email: user_email.value
+        }
+      }).then(function (response) {
+        navigate("/Home");
+        console.log(response?.status + ": " + JSON.stringify(response?.data));
+      }).catch((err) => {
+        closeOpenPopUp("Incorrect email");
+        document.getElementById("myForm").reset();
+        console.log("Error " + err?.response?.status + ": " + err?.response?.data);
+      });
+
+      console.log(apiData)
+
       // if (apiData.response.Status === 404) {
         //    closeOpenPopUp("Unknown Email")
         //    user_email.reset();
@@ -33,7 +52,7 @@ function Login() {
   
     return (
       <div>
-        <div id="popup-modal" class="fixed w-100% h-100% bg-black/70 p-4 overflow-x-hidden backdrop-blur-md bg-cover bg-no-repeat overflow-y-auto md:inset-0 h-[calc(100%)] max-h-full z-10" style={{display: "block"}}>
+        <div id="popup-modal" class="fixed w-100% h-100% bg-black/70 p-4 overflow-x-hidden backdrop-blur-md bg-cover bg-no-repeat overflow-y-auto md:inset-0 h-[calc(100%)] max-h-full z-10" style={{display: "none"}}>
           <div class="fixed top-2/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md max-h-full">
               <div class="relative items-center right-50% bg-white rounded-xl shadow dark:bg-black/50">
                   <div class="p-6 text-center">
@@ -52,7 +71,7 @@ function Login() {
               <div class="mb-8 flex flex-col items-center">
                 <img src={Logo} width="350" alt="" srcset="" />
               </div>
-              <form action="#">
+              <form id="myForm">
                 <div class="flex mb-4 text-lg justify-center">
                   <input id="email" class="rounded-2xl border-none bg-sky-800 bg-opacity-50 px-6 py-2 text-center text-inherit placeholder-slate-500 shadow-lg outline-none backdrop-blur-md" type="text" placeholder="email" />
                 </div>

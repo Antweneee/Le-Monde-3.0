@@ -6,19 +6,27 @@ import (
     "github.com/gin-gonic/gin"
 	"backend/database"
 	"errors"
+	"golang.org/x/crypto/bcrypt"
+	"html"
+	"strings"
 )
 
 type ReceiveUser struct {
     Email string `json:"email"`
 }
 
-func AddUser(c *gin.Context, db *gorm.DB) {
+func AddUser(username string, password string, c *gin.Context, db *gorm.DB) {
 	user := new(database.User);
+	user.Username = html.EscapeString(strings.TrimSpace(username))
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password),bcrypt.DefaultCost)
 
-	if err := c.Bind(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error})
 		return
 	}
+
+	user.Password = string(hashedPassword)
+
 	result := db.Create(&user)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": result.Error})
