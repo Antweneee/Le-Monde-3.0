@@ -9,12 +9,14 @@ import (
 	auth "backend/router/authentification"
 	dbService "backend/router/dbInteraction"
 	"backend/middlewares"
-
+	"github.com/gin-contrib/cors"
 )
 
 func Router(db *gorm.DB) *gin.Engine {
 	
 	r := gin.Default()
+
+	r.Use(cors.Default())
 
 	public := r.Group("/api")
 
