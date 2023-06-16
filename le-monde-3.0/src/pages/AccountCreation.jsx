@@ -1,11 +1,8 @@
 import React, { useEffect }  from 'react';
 import Logo from '../assets/LeMonde3-0.png'
-import { useNavigate } from "react-router-dom";
 import axios from 'axios'
 
-function Login() {
-  let navigate = useNavigate(); 
-
+function AccountCreation() {
     useEffect(() => {
     }, []);
 
@@ -25,10 +22,6 @@ function Login() {
       const display = document.getElementById('popup-modal').style.display;
       display === "block" ? document.getElementById('popup-modal').style.display='none' : document.getElementById('popup-modal').style.display='block'
       document.getElementById('modal_text').innerHTML = Error_string;
-    }
-
-    const navigateRegister = (FileName) => {
-      navigate("/ItAPI");
     }
   
     return (
@@ -54,9 +47,11 @@ function Login() {
               </div>
               <form action="#">
                 <div class="flex mb-4 text-lg justify-center">
+                  <input id="username" class="rounded-2xl border-none bg-sky-800 bg-opacity-50 px-6 py-2 text-center text-inherit placeholder-slate-500 shadow-lg outline-none backdrop-blur-md" type="text" placeholder="username" />
+                </div>
+                <div class="flex mb-4 text-lg justify-center">
                   <input id="email" class="rounded-2xl border-none bg-sky-800 bg-opacity-50 px-6 py-2 text-center text-inherit placeholder-slate-500 shadow-lg outline-none backdrop-blur-md" type="text" placeholder="email" />
                 </div>
-
                 <div class="flex mb-4 text-lg justify-center">
                   <input id="password" class="rounded-2xl border-none bg-sky-800 bg-opacity-50 px-6 py-2 text-center text-inherit placeholder-slate-500 shadow-lg outline-none backdrop-blur-md" type="Password" placeholder="password" />
                 </div>
@@ -66,7 +61,7 @@ function Login() {
               </form>
             </div>
             <span class="text-white text-sm flex pt-4 justify-center items-center text-center cursor-pointer">
-              Let's create an account
+              Already have an account ?
             </span>
           </div>
         </div>
@@ -74,4 +69,4 @@ function Login() {
     );
 }
 
-export default Login;
+export default AccountCreation;

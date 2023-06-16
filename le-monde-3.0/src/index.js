@@ -7,6 +7,7 @@ import NoPage from "./pages/NoPage";
 import Layout from './pages/Layout';
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import AccountCreation from "./pages/AccountCreation";
 
 export default function App() {
   useEffect(() => {
@@ -15,7 +16,8 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-      <Route index element={<Login />} />
+      <Route index path="/Login" element={<Login />} />
+      <Route path="/Register" element={<AccountCreation />} />
         <Route path="/" element={<Layout />}>
           <Route path="/Home" element={<Home />} />
           <Route path="*" element={<NoPage />} />
