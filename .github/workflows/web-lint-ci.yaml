@@ -5,9 +5,6 @@ on: [push, pull_request]
 jobs:
   web-lint:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./frontend/web
 
     steps:
       - name: Checkout repository
@@ -20,9 +17,11 @@ jobs:
           cache: npm
 
       - name: Install dependencies
+        working-directory: ./frontend/web
         run: npm install
 
       - name: Run lint
+        working-directory: ./frontend/web
         run: npm run lint > lint-results
 
       - name: Get lint results
