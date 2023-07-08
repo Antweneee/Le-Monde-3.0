@@ -15,6 +15,7 @@ jobs:
         with:
           node-version: 18
           cache: npm
+          cache-dependency-path: './frontend/web'
 
       - name: Install dependencies
         working-directory: ./frontend/web
