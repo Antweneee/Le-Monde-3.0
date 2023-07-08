@@ -14,7 +14,7 @@ jobs:
         working-directory: ./frontend/web
         run: docker build . -t lemonde-web:latest > build-results
 
-      - name: Get lint results
+      - name: Get build results
         uses: actions/upload-artifact@v1
         if: failure()
         with:
