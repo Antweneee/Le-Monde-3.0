@@ -2,7 +2,7 @@
 
 ## Run with docker
 
-- ENV setup (don't forget to update the `.env` file created)
+- ENV setup (don't forget to update the `.env` file created, if needed)
 ```shell
 cp .env.example .env
 ```
