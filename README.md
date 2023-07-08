@@ -1,6 +1,6 @@
 # Le-Monde-3.0
 
-## Run with docker
+## Run with docker-compose
 
 - ENV setup (don't forget to update the `.env` file created, if needed)
 ```shell
