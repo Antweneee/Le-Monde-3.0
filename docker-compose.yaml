@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  frontend:
+    container_name: lemonde-web
+    build:
+      context: frontend/web
+    env_file:
+      - .env
+    ports:
+      - ${CLIENT_PORT}:80
