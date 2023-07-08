@@ -1,0 +1,39 @@
+name: web e2e tests
+
+on: [push, pull_request]
+
+jobs:
+  web-e2e:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: npm
+          cache-dependency-path: './frontend/web'
+
+      - name: Run e2e tests
+        uses: cypress-io/github-action@v5
+        with:
+          working-directory: ./frontend/web
+          start: npm start
+          wait-on: 'http://localhost:3000'
+
+      - name: Get e2e screenshots
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: web-e2e-screenshots
+          path: ./frontend/web/cypress/screenshots
+
+      - name: Get e2e videos
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: web-e2e-videos
+          path: ./frontend/web/cypress/videos

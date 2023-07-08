@@ -4,6 +4,7 @@ parserOptions:
   ecmaVersion: latest
   project:
     - tsconfig.json
+    - cypress/tsconfig.json
 
 env:
   node: true
@@ -19,5 +20,6 @@ extends:
 rules:
   prettier/prettier: warn
   no-console: off
+  "import/no-extraneous-dependencies": off
 
   react-hooks/exhaustive-deps: off

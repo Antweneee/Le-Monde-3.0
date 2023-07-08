@@ -7,15 +7,22 @@ const Inscription = (): JSX.Element => {
 
 	return (
 		<>
-			<Input variant="primary-1" placeholder="e-mail" />
-			<Input variant="primary-1" placeholder="nom d'utilisateur" />
-			<Input variant="primary-1" placeholder="mot de passe" type="password" />
-			<Input variant="primary-1" placeholder="confirmation du mot de passe" type="password" />
-			<Button variant="primary-1" onClick={() => navigate('/favoris')}>
+			<Input id="inscription-email-input" variant="primary-1" placeholder="e-mail" />
+			<Input id="inscription-username-input" variant="primary-1" placeholder="nom d'utilisateur" />
+			<Input id="inscription-pwd-input" variant="primary-1" placeholder="mot de passe" type="password" />
+			<Input
+				id="inscription-confirmed-pwd-input"
+				variant="primary-1"
+				placeholder="confirmation du mot de passe"
+				type="password"
+			/>
+			<Button id="inscription-inscription-btn" variant="primary-1" onClick={() => navigate('/favoris')}>
 				Inscription
 			</Button>
 			<Link as={RouteLink} to="/connexion" w="100%">
-				<Button variant="secondary-4">Connexion</Button>
+				<Button id="inscription-connexion-btn" variant="secondary-4">
+					Connexion
+				</Button>
 			</Link>
 		</>
 	);

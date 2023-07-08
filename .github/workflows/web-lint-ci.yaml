@@ -1,0 +1,33 @@
+name: web lint tests
+
+on: [push, pull_request]
+
+jobs:
+  web-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: npm
+          cache-dependency-path: './frontend/web'
+
+      - name: Install dependencies
+        working-directory: ./frontend/web
+        run: npm install
+
+      - name: Run lint
+        working-directory: ./frontend/web
+        run: npm run lint > lint-results
+
+      - name: Get lint results
+        uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: web-lint-results
+          path: ./frontend/web/lint-results
