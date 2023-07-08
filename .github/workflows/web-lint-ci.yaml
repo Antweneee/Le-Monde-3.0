@@ -27,7 +27,7 @@ jobs:
 
       - name: Get lint results
         uses: actions/upload-artifact@v1
-        if: always()
+        if: failure()
         with:
           name: web-lint-results
           path: ./frontend/web/lint-results

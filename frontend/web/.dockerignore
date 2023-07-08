@@ -1,0 +1,10 @@
+README.md
+Dockerfile
+.gitignore
+.env
+.env.example
+node_modules/
+cypress/
+cypress.config.ts
+.eslintrc.yml
+.prettierrc

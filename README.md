@@ -1,12 +1,13 @@
 # Le-Monde-3.0
-Repository for Le Monde 3.0 project.
 
-## Frontend
+## Run with docker-compose
 
+- ENV setup (don't forget to update the `.env` file created, if needed)
 ```shell
-cd le-monde-3.0
-npm i
-npm start
+cp .env.example .env
 ```
 
-## Backend
+- Run docker-compose
+```shell
+docker-compose up --build
+```
