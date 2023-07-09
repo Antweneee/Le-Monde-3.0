@@ -26,4 +26,4 @@ jobs:
           path: ./build-results
 
       - name: Test web
-        run: curl -s http://localhost:3000/connexion | grep "Le Monde 3.0" > /dev/null && return 0 || return 1
+        run: curl -s http://localhost:3000/connexion | grep "Le Monde 3.0" > /dev/null && exit 0 || exit 1
