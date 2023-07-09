@@ -1,0 +1,29 @@
+name: project build tests
+
+on: [push, pull_request]
+
+jobs:
+  project-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Create env file
+        run: |
+          touch .env
+          echo CLIENT_PORT=3000 >> .env
+
+      - name: Build and run project
+        run: docker-compose up --build -d > build-results
+
+      - name: Get build results
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: project-build-results
+          path: ./build-results
+
+      - name: Test web
+        run: curl -s http://localhost:3000/connexion | grep "Le Monde 3.0" > /dev/null && exit 0 || exit 1

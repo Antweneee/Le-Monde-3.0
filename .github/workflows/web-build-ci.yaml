@@ -3,14 +3,14 @@ name: web build tests
 on: [push, pull_request]
 
 jobs:
-  web-lint:
+  web-build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Build project
+      - name: Build web
         working-directory: ./frontend/web
         run: docker build . -t lemonde-web:latest > build-results
 
