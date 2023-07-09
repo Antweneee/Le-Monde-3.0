@@ -26,11 +26,14 @@ FROM nginx:1.21.6-alpine AS app
 # Set the working directory
 WORKDIR /app
 
+# Copy nginx conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 # Copy code
 COPY --from=builder /app/build /usr/share/nginx/html
 
 # Inform port that the container listens on
-EXPOSE 3000
+EXPOSE 80
 
 # Prefix commands and start production
 ENTRYPOINT [ "nginx", "-g", "daemon off;" ]

@@ -15,8 +15,8 @@ jobs:
           touch .env
           echo CLIENT_PORT=3000 >> .env
 
-      - name: Build project
-        run: docker-compose build > build-results
+      - name: Build and run project
+        run: docker-compose up --build -d > build-results
 
       - name: Get build results
         uses: actions/upload-artifact@v1
@@ -24,3 +24,6 @@ jobs:
         with:
           name: project-build-results
           path: ./build-results
+
+      - name: Test web
+        run: curl -s http://localhost:3000/connexion | grep "Le Monde 3.0" > /dev/null && return 0 || return 1
