@@ -20,12 +20,12 @@ func Router() *gin.Engine {
 		AllowCredentials: true,
 	}))
 
-	public := r.Group("/api")
-	protected := r.Group("/api/admin")
+	public := r.Group("/")
+	protected := r.Group("/")
 
 	protected.Use(mw.JwtAuthMiddleware())
 
-	adm.ApplyAdminRoutes(protected, public)
+	adm.ApplyAdminRoutes(public)
 	art.ApplyArticlesRoutes(protected)
 
 	return r
