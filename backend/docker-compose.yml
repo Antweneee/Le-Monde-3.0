@@ -25,6 +25,12 @@ services:
       context: topics
     ports:
       - 8083:8083
+  bookmarks:
+    container_name : bookmarks-lemonde3-0
+    build:
+      context: bookmarks
+    ports:
+      - 8084:8084
   ipfs:
     container_name: ipfs
     image: ipfs/go-ipfs
