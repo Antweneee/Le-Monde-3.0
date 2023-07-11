@@ -19,6 +19,12 @@ services:
       context: articles
     ports:
       - 8082:8082
+  topics:
+    container_name : topics-lemonde3-0
+    build:
+      context: topics
+    ports:
+      - 8083:8083
   ipfs:
     container_name: ipfs
     image: ipfs/go-ipfs
