@@ -1,19 +1,19 @@
 package router
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	mw "main/middlewares"
-	"github.com/gin-contrib/cors"
-	art "main/router/articles"
 	adm "main/router/admin"
+	art "main/router/articles"
 )
 
 func Router() *gin.Engine {
-	
+
 	r := gin.Default()
 
 	r.Use(cors.New(cors.Config{
-		AllowOrigins: 	  []string{"http://localhost:3000"},
+		AllowOrigins:     []string{"http://localhost:3000"},
 		AllowMethods:     []string{"PUT", "PATCH", "GET", "POST"},
 		AllowHeaders:     []string{"*"},
 		ExposeHeaders:    []string{"Content-Length", "Content-Type"},

@@ -1,4 +1,4 @@
-package router
+package sources
 
 import (
 	"bytes"
@@ -7,7 +7,7 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"log"
-	src "main/sources"
+	router2 "main/router"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -25,7 +25,7 @@ func fakeDB() *gorm.DB {
 		log.Fatal("failed to connect database:", err)
 	}
 
-	db.AutoMigrate(&src.User{})
+	db.AutoMigrate(&User{})
 
 	return db
 }
@@ -43,7 +43,7 @@ func TestRegisterAdmin(t *testing.T) {
 		t.Fatalf("Failed to marshal request body: %s", err)
 	}
 
-	router := Router(fakeDB())
+	router := router2.Router(fakeDB())
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("POST", "/register", bytes.NewBuffer(jsonBody))

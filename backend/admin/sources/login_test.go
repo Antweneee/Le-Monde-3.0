@@ -1,9 +1,10 @@
-package router
+package sources
 
 import (
 	"bytes"
 	"encoding/json"
 	"github.com/go-playground/assert/v2"
+	router2 "main/router"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -26,7 +27,7 @@ func TestLoginAdmin(t *testing.T) {
 		t.Fatalf("Failed to marshal request body: %s", err)
 	}
 
-	router := Router(fakeDB())
+	router := router2.Router(fakeDB())
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("POST", "/login", bytes.NewBuffer(jsonBody))

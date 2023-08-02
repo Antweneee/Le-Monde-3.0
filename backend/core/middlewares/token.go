@@ -1,12 +1,12 @@
 package middlewares
 
 import (
-	"github.com/gin-gonic/gin"
-	jwt "github.com/dgrijalva/jwt-go"
-	"os"
 	"fmt"
-	"strings"
+	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
+	"os"
 	"strconv"
+	"strings"
 )
 
 func TokenValid(c *gin.Context) error {

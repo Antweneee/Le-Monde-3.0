@@ -1,41 +1,55 @@
 package sources
 
-// import (
-// 	"github.com/gin-gonic/gin"
-// 	"gorm.io/gorm"
-// 	"net/http"
-// )
+import (
+	"errors"
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
+	"net/http"
+)
 
-// func AddIpfs(c *gin.Context, db *gorm.DB) {
-// 	sh := shell.NewShell("localhost:5001")
+type EditedArticle struct {
+	Title   string `json:"title"`
+	Content string `json:"content"`
+}
 
-//     file, header, err := c.Request.FormFile("file")
-//     if err != nil {
-//         c.JSON(500, gin.H{"error": err.Error()})
-//         return
-//     }
-//     defer file.Close()
+func EditArticle(c *gin.Context, db *gorm.DB) {
+	article := new(Article)
 
-//     hash, err := sh.Add(file)
-//     if err != nil {
-//         c.JSON(500, gin.H{"error": err.Error()})
-//         return
-//     }
+	userId, err := getUserId(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-//     c.JSON(200, gin.H{"filename": header.Filename, "hash": hash})
-// }
+	editedArticle := EditedArticle{}
+	if err := c.ShouldBindJSON(&editedArticle); err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
 
-// func AddDB(c *gin.Context, db *gorm.DB) {
-// 	article := new(database.Article)
+	title := c.Param("title")
 
-// 	if err := c.Bind(&article); err != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-// 		return
-// 	}
-// 	result := db.Create(&article)
-// 	if result.Error != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": result.Error})
-// 		return
-// 	}
-// 	c.JSON(http.StatusCreated, gin.H{"Created" : "Article created successfully"})
-// }
+	if title == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "title needed to retrieve an article"})
+		return
+	}
+
+	result := db.Where(Article{UserId: userId, Title: title}).Find(&article)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			c.JSON(http.StatusNotFound, gin.H{"error": result.Error})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error})
+		return
+	} else if article.Id == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "article not found"})
+		return
+	}
+	article.Content = editedArticle.Content
+	article.Title = editedArticle.Title
+
+	db.Save(&article)
+
+	c.JSON(http.StatusOK, article)
+}

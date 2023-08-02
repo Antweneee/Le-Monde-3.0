@@ -1,17 +1,19 @@
 package sources
 
 import (
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"net/http"
-	"golang.org/x/crypto/bcrypt"
+	"os"
+	"time"
 )
 
 type LoginInput struct {
-	Email string `json:"email" binding:"required"`
+	Email    string `json:"email" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
-
 
 func Login(c *gin.Context, db *gorm.DB) {
 	var input LoginInput
@@ -21,7 +23,7 @@ func Login(c *gin.Context, db *gorm.DB) {
 		return
 	}
 
-	u := new(User);
+	u := new(User)
 
 	u.Email = input.Email
 	u.Password = input.Password
@@ -33,14 +35,24 @@ func Login(c *gin.Context, db *gorm.DB) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token":token})
+	c.JSON(http.StatusOK, gin.H{"token": token})
 }
 
-func LoginCheck(username string, password string, db *gorm.DB) (string,error) {
-	
+func GenerateToken(user_id uint) (string, error) {
+	claims := jwt.MapClaims{}
+	claims["authorized"] = true
+	claims["user_id"] = user_id
+	claims["exp"] = time.Now().Add(time.Hour * time.Duration(1)).Unix()
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	return token.SignedString([]byte(os.Getenv("secret_key")))
+}
+
+func LoginCheck(username string, password string, db *gorm.DB) (string, error) {
+
 	var err error
 
-	u := new(User);
+	u := new(User)
 
 	err = db.Model(User{}).Where("email = ?", username).Take(&u).Error
 
@@ -54,16 +66,16 @@ func LoginCheck(username string, password string, db *gorm.DB) (string,error) {
 		return "", err
 	}
 
-	token,err := GenerateToken(u.ID)
+	token, err := GenerateToken(u.Id)
 
 	if err != nil {
-		return "",err
+		return "", err
 	}
 
-	return token,nil
-	
+	return token, nil
+
 }
 
-func VerifyPassword(password,hashedPassword string) error {
+func VerifyPassword(password, hashedPassword string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }

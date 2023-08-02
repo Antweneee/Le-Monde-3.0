@@ -1,43 +1,47 @@
 package router
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"github.com/gin-contrib/cors"
 	src "main/sources"
 )
 
 func Router(db *gorm.DB) *gin.Engine {
-	
+
 	r := gin.Default()
 
 	r.Use(cors.New(cors.Config{
-		AllowOrigins: 	  []string{"http://localhost:8080"},
+		AllowOrigins:     []string{"http://localhost:8080"},
 		AllowMethods:     []string{"PUT", "PATCH", "GET", "POST"},
 		AllowHeaders:     []string{"*"},
 		ExposeHeaders:    []string{"Content-Length", "Content-Type"},
 		AllowCredentials: true,
 	}))
- 
+
 	r.POST("/articles", func(c *gin.Context) {
-		src.AddIpfs(c)
-		// src.AddDB(c, db)
+		src.AddArticle(c, db)
 	})
 
-	r.GET("/articles/:id", func(c *gin.Context) {
-		src.GetIPFS(c)
-		// src.GetDB(c, db)
+	r.GET("/articles", func(c *gin.Context) {
+		src.GetAllArticles(c, db)
 	})
 
-	r.DELETE("/articles/:id", func(c *gin.Context) {
-		src.DeleteIPFS(c)
-		// src.DeleteDB(c, db)
+	r.GET("/articles/:title", func(c *gin.Context) {
+		src.GetArticle(c, db)
 	})
 
-	// r.PUT("/articles/:id", func(c *gin.Context) {
-	// 	src.PutIPFS(c, db)
-	// 	src.PutDB(c, db)
-	// })
+	r.DELETE("/articles", func(c *gin.Context) {
+		src.DeleteAllArticles(c, db)
+	})
+
+	r.DELETE("/articles/:title", func(c *gin.Context) {
+		src.DeleteArticle(c, db)
+	})
+
+	r.PUT("/articles/:title", func(c *gin.Context) {
+		src.EditArticle(c, db)
+	})
 
 	return r
 }
