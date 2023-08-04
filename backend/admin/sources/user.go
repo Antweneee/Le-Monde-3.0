@@ -12,7 +12,7 @@ import (
 
 type User struct {
 	gorm.Model
-	Id       uint
+	Id       int32
 	Email    string
 	Username string
 	Password string

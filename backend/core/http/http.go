@@ -1,11 +1,12 @@
 package http
 
 import (
-	"github.com/gin-gonic/gin"
-	"encoding/json"
-	"net/http"
-	"io/ioutil"
 	"bytes"
+	"encoding/json"
+	"github.com/gin-gonic/gin"
+	"io/ioutil"
+	mw "main/middlewares"
+	"net/http"
 )
 
 func MakeHTTPRequest(c *gin.Context, method string, url string, requestBody interface{}) ([]byte, int, error) {
@@ -20,6 +21,7 @@ func MakeHTTPRequest(c *gin.Context, method string, url string, requestBody inte
 	}
 
 	request.Header.Set("Content-Type", "application/json")
+	request.Header.Set("Authorization", "Bearer "+mw.ExtractToken(c))
 
 	client := &http.Client{}
 	response, err := client.Do(request)

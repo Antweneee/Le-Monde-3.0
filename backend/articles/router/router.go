@@ -23,24 +23,40 @@ func Router(db *gorm.DB) *gin.Engine {
 		src.AddArticle(c, db)
 	})
 
+	r.POST("/articles/:id/likes", func(c *gin.Context) {
+		src.AddLike(c, db)
+	})
+
 	r.GET("/articles", func(c *gin.Context) {
 		src.GetAllArticles(c, db)
 	})
 
-	r.GET("/articles/:title", func(c *gin.Context) {
+	r.GET("/articles/:id", func(c *gin.Context) {
 		src.GetArticle(c, db)
+	})
+
+	r.GET("/articles/me", func(c *gin.Context) {
+		src.GetMyArticles(c, db)
+	})
+
+	r.GET("/articles/:id/likes", func(c *gin.Context) {
+		src.GetLikesInfo(c, db)
+	})
+
+	r.PUT("/articles/:id", func(c *gin.Context) {
+		src.EditArticle(c, db)
 	})
 
 	r.DELETE("/articles", func(c *gin.Context) {
 		src.DeleteAllArticles(c, db)
 	})
 
-	r.DELETE("/articles/:title", func(c *gin.Context) {
+	r.DELETE("/articles/:id", func(c *gin.Context) {
 		src.DeleteArticle(c, db)
 	})
 
-	r.PUT("/articles/:title", func(c *gin.Context) {
-		src.EditArticle(c, db)
+	r.DELETE("/articles/:id/likes", func(c *gin.Context) {
+		src.RemoveLike(c, db)
 	})
 
 	return r

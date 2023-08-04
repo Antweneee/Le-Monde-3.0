@@ -6,6 +6,7 @@ import (
 	mw "main/middlewares"
 	adm "main/router/admin"
 	art "main/router/articles"
+	bkm "main/router/bookmarks"
 )
 
 func Router() *gin.Engine {
@@ -27,6 +28,7 @@ func Router() *gin.Engine {
 
 	adm.ApplyAdminRoutes(public)
 	art.ApplyArticlesRoutes(protected)
+	bkm.ApplyBookmarksRoutes(protected)
 
 	return r
 }

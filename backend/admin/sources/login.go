@@ -38,7 +38,7 @@ func Login(c *gin.Context, db *gorm.DB) {
 	c.JSON(http.StatusOK, gin.H{"token": token})
 }
 
-func GenerateToken(user_id uint) (string, error) {
+func GenerateToken(user_id int32) (string, error) {
 	claims := jwt.MapClaims{}
 	claims["authorized"] = true
 	claims["user_id"] = user_id

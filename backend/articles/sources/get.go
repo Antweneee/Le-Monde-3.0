@@ -3,38 +3,59 @@ package sources
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
-	"github.com/ipfs/go-ipfs-api"
+	"github.com/lib/pq"
 	"gorm.io/gorm"
-	"log"
 	"net/http"
-	"os"
+	"strconv"
 )
 
-func GetIPFS(c *gin.Context) {
-	sh := shell.NewShell("localhost:5001")
+type LikesResponse struct {
+	Amount   int
+	Accounts pq.Int32Array `gorm:"type:integer[]"`
+}
 
-	cid := c.Param("cid")
-	cwd, _ := os.Getwd()
-	c.File(cwd + "/" + cid)
-
-	file, err := os.Create(cwd + "/" + cid)
-	if err != nil {
-		log.Fatal(err)
+func addIfNotPresent(arr pq.Int32Array, key int32) pq.Int32Array {
+	for _, val := range arr {
+		if val == key {
+			return arr
+		}
 	}
-	defer file.Close()
+	return append(arr, key)
+}
 
-	err = sh.Get(cid, cwd+"/"+cid)
-	if err != nil {
-		log.Fatal(err)
+func GetAllArticles(c *gin.Context, db *gorm.DB) {
+	articles := new([]Article)
+
+	result := db.Where(Article{}).Find(&articles)
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error})
+		return
 	}
-
-	c.File(cwd + "/" + cid)
-
-	c.JSON(200, gin.H{"message": "content successfully retrieved"})
+	c.JSON(http.StatusOK, articles)
 }
 
 func GetArticle(c *gin.Context, db *gorm.DB) {
 	article := new(Article)
+
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"get": "article id could not be retrieved"})
+		return
+	}
+
+	result := db.Where(Article{Id: int32(id)}).Find(&article)
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error})
+		return
+	} else if article.Title == "" {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Article not found"})
+		return
+	}
+	c.JSON(http.StatusOK, article)
+}
+
+func GetMyArticles(c *gin.Context, db *gorm.DB) {
+	articles := new([]Article)
 
 	userId, err := getUserId(c)
 	if err != nil {
@@ -42,14 +63,23 @@ func GetArticle(c *gin.Context, db *gorm.DB) {
 		return
 	}
 
-	title := c.Param("title")
-
-	if title == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "title needed to retrieve an article"})
+	result := db.Where(Article{UserId: userId}).Find(&articles)
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error})
 		return
 	}
+	c.JSON(http.StatusOK, articles)
+}
 
-	result := db.Where(Article{UserId: userId, Title: title}).Find(&article)
+func GetLikesInfo(c *gin.Context, db *gorm.DB) {
+	article := new(Article)
+
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		panic(err)
+	}
+
+	result := db.Where(Article{Id: int32(id)}).Find(&article)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{"error": result.Error})
@@ -60,57 +90,7 @@ func GetArticle(c *gin.Context, db *gorm.DB) {
 	} else if article.Id == 0 {
 		c.JSON(http.StatusNotFound, gin.H{"error": "article not found"})
 		return
-	} else {
-		c.JSON(http.StatusOK, article)
-		return
 	}
+
+	c.JSON(http.StatusOK, LikesResponse{len(article.Likes), article.Likes})
 }
-
-func GetAllArticles(c *gin.Context, db *gorm.DB) {
-	articles := new([]Article)
-
-	userId, err := getUserId(c)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	}
-
-	result := db.Where(Article{UserId: userId}).Find(&articles)
-	if result.Error != nil {
-		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{"error": result.Error})
-			return
-		}
-		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error})
-		return
-	} else {
-		c.JSON(http.StatusOK, articles)
-		return
-	}
-}
-
-//
-//func GetAllArticles(c *gin.Context, db *gorm.DB) {
-//	article := new(database.Article)
-//
-//	if err := c.Bind(&article); err != nil {
-//		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-//		return
-//	}
-//
-//	cid := c.Query("cid")
-//	result := db.Where(database.Article{Cid: cid}).Find(&article)
-//	if result.Error != nil {
-//		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-//			c.JSON(http.StatusNotFound, gin.H{"error": result.Error})
-//			return
-//		}
-//		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error})
-//		return
-//	} else if article.Id == 0 {
-//		c.JSON(http.StatusNotFound, gin.H{"error": "article not found"})
-//		return
-//	} else {
-//		c.JSON(http.StatusOK, article)
-//		return
-//	}
-//}

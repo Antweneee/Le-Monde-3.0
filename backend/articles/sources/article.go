@@ -4,13 +4,14 @@ import (
 	"errors"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/lib/pq"
 	"gorm.io/gorm"
 	"net/http"
 	"os"
 	"strings"
 )
 
-func getUserId(c *gin.Context) (uint, error) {
+func getUserId(c *gin.Context) (int32, error) {
 
 	bearerToken := c.Request.Header.Get("Authorization")
 	tokenString := ""
@@ -31,7 +32,7 @@ func getUserId(c *gin.Context) (uint, error) {
 
 	if claims, ok := tokenPure.Claims.(jwt.MapClaims); ok && tokenPure.Valid {
 		userID, _ := claims["user_id"].(float64)
-		return uint(userID), nil
+		return int32(userID), nil
 	} else {
 		return 0, errors.New("invalid token")
 	}
@@ -39,8 +40,9 @@ func getUserId(c *gin.Context) (uint, error) {
 
 type Article struct {
 	gorm.Model
-	Id      uint
-	UserId  uint
+	Id      int32
+	UserId  int32
 	Title   string
 	Content string
+	Likes   pq.Int32Array `gorm:"type:integer[]"`
 }

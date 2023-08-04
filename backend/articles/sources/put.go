@@ -1,10 +1,10 @@
 package sources
 
 import (
-	"errors"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"net/http"
+	"strconv"
 )
 
 type EditedArticle struct {
@@ -27,29 +27,23 @@ func EditArticle(c *gin.Context, db *gorm.DB) {
 		return
 	}
 
-	title := c.Param("title")
-
-	if title == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "title needed to retrieve an article"})
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"put": "article id could not be retrieved"})
 		return
 	}
 
-	result := db.Where(Article{UserId: userId, Title: title}).Find(&article)
+	result := db.Where(Article{UserId: userId, Id: int32(id)}).Find(&article)
 	if result.Error != nil {
-		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{"error": result.Error})
-			return
-		}
 		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error})
 		return
-	} else if article.Id == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"error": "article not found"})
+	} else if article.Title == "" {
+		c.JSON(http.StatusNotFound, gin.H{"error": "article not found or was not created by the current user"})
 		return
 	}
 	article.Content = editedArticle.Content
 	article.Title = editedArticle.Title
 
 	db.Save(&article)
-
 	c.JSON(http.StatusOK, article)
 }

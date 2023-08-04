@@ -2,59 +2,82 @@ package sources
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/ipfs/go-ipfs-api"
 	"gorm.io/gorm"
 	"net/http"
+	"strconv"
 )
-
-func DeleteIPFS(c *gin.Context) {
-	cid := c.Param("cid")
-
-	sh := shell.NewShell("localhost:5001")
-
-	err := sh.Unpin(cid)
-	if err != nil {
-		c.JSON(500, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	c.JSON(200, gin.H{"message": "cid deleted successfully : " + cid})
-}
-
-func DeleteArticle(c *gin.Context, db *gorm.DB) {
-	userId, err := getUserId(c)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	}
-
-	title := c.Param("title")
-
-	if title == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "title needed to delete an article"})
-		return
-	}
-
-	result := db.Where(Article{UserId: userId, Title: title}).Delete(&Article{})
-	if result.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error})
-	} else {
-		c.JSON(http.StatusOK, gin.H{"delete": "article has been deleted successfully"})
-	}
-}
 
 func DeleteAllArticles(c *gin.Context, db *gorm.DB) {
 
 	userId, err := getUserId(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	result := db.Where(Article{UserId: userId}).Delete(&Article{})
 	if result.Error != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error})
-	} else {
-		c.JSON(http.StatusOK, gin.H{"delete": "all articles have been successfully deleted"})
+		return
 	}
+	c.JSON(http.StatusOK, gin.H{"delete": "all articles have been successfully deleted"})
+}
+
+func DeleteArticle(c *gin.Context, db *gorm.DB) {
+	userId, err := getUserId(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"delete": "article id could not be retrieved"})
+		return
+	}
+
+	result := db.Where(Article{UserId: userId, Id: int32(id)}).Delete(&Article{})
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error})
+		return
+	} else if result.RowsAffected == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "article not found or was not created by the current user"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"delete": "article has been successfully deleted"})
+}
+
+func RemoveLike(c *gin.Context, db *gorm.DB) {
+	article := new(Article)
+	i := 0
+
+	userId, err := getUserId(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		panic(err)
+	}
+
+	result := db.Where(Article{Id: int32(id)}).Find(&article)
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error})
+		return
+	} else if article.Title == "" {
+		c.JSON(http.StatusNotFound, gin.H{"error": "article not found"})
+		return
+	}
+
+	for _, value := range article.Likes {
+		if value != userId {
+			article.Likes[i] = value
+			i++
+		}
+	}
+	article.Likes = article.Likes[:i]
+	db.Save(&article)
+	c.JSON(http.StatusOK, article)
 }
