@@ -43,7 +43,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/articles.Article"
+                                "$ref": "#/definitions/main_router_articles.Article"
                             }
                         }
                     },
@@ -87,7 +87,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/articles.Article"
+                            "$ref": "#/definitions/main_router_articles.Article"
                         }
                     },
                     "400": {
@@ -130,7 +130,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/articles.Article"
+                            "$ref": "#/definitions/main_router_articles.Article"
                         }
                     },
                     "400": {
@@ -162,7 +162,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/articles.DeletedResponse"
+                            "$ref": "#/definitions/main_router_articles.DeletedResponse"
                         }
                     },
                     "400": {
@@ -196,7 +196,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/articles.Article"
+                            "$ref": "#/definitions/main_router_articles.Article"
                         }
                     },
                     "400": {
@@ -228,7 +228,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/articles.DeletedResponse"
+                            "$ref": "#/definitions/main_router_articles.DeletedResponse"
                         }
                     },
                     "400": {
@@ -294,7 +294,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/articles.Article"
+                            "$ref": "#/definitions/main_router_articles.Article"
                         }
                     },
                     "400": {
@@ -326,7 +326,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/articles.Article"
+                            "$ref": "#/definitions/main_router_articles.Article"
                         }
                     },
                     "400": {
@@ -362,8 +362,366 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/articles.Article"
+                                "$ref": "#/definitions/main_router_articles.Article"
                             }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/http.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/http.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/bookmarks": {
+            "get": {
+                "description": "Retrieve the connected user bookmarks",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bookmarks"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/articles.Bookmark"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/http.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/http.HTTPError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Add a bookmark",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bookmarks"
+                ],
+                "parameters": [
+                    {
+                        "description": "Params to create a bookmark",
+                        "name": "BookmarkInput",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/articles.BookmarkInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/articles.Bookmark"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/http.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/http.HTTPError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete the connected user bookmarks",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bookmarks"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main_router_bookmarks.DeletedResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/http.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/http.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/bookmarks/:id": {
+            "get": {
+                "description": "Retrieve the connected user bookmark",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bookmarks"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/articles.Bookmark"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/http.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/http.HTTPError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Edit a bookmark",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bookmarks"
+                ],
+                "parameters": [
+                    {
+                        "description": "Params to edit a bookmark",
+                        "name": "BookmarkInput",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/articles.BookmarkInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/articles.Bookmark"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/http.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/http.HTTPError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete the connected user bookmark",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bookmarks"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main_router_bookmarks.DeletedResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/http.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/http.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/bookmarks/:id/articles": {
+            "get": {
+                "description": "Retrieve the articles of a given bookmark",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bookmarks"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/main_router_bookmarks.Article"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/http.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/http.HTTPError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Remove all articles of a bookmark",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bookmarks"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/articles.Bookmark"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/http.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/http.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/bookmarks/:id/articles/:id-article": {
+            "post": {
+                "description": "Add an article in a bookmark",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bookmarks"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/articles.Bookmark"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/http.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/http.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/bookmarks/:id/articles/id-article": {
+            "delete": {
+                "description": "Remove an article of a bookmark",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bookmarks"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/articles.Bookmark"
                         }
                     },
                     "400": {
@@ -473,29 +831,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "articles.Article": {
-            "type": "object",
-            "properties": {
-                "content": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "likes": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                },
-                "title": {
-                    "type": "string"
-                },
-                "userId": {
-                    "type": "integer"
-                }
-            }
-        },
         "articles.ArticleInput": {
             "type": "object",
             "required": [
@@ -511,12 +846,34 @@ const docTemplate = `{
                 }
             }
         },
-        "articles.DeletedResponse": {
+        "articles.Bookmark": {
             "type": "object",
             "properties": {
-                "delete": {
-                    "type": "string",
-                    "example": "all articles have been successfully deleted"
+                "articles": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "articles.BookmarkInput": {
+            "type": "object",
+            "required": [
+                "title"
+            ],
+            "properties": {
+                "title": {
+                    "type": "string"
                 }
             }
         },
@@ -596,6 +953,70 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "status bad request"
+                }
+            }
+        },
+        "main_router_articles.Article": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "likes": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "main_router_articles.DeletedResponse": {
+            "type": "object",
+            "properties": {
+                "delete": {
+                    "type": "string",
+                    "example": "all articles have been successfully deleted"
+                }
+            }
+        },
+        "main_router_bookmarks.Article": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "likes": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "main_router_bookmarks.DeletedResponse": {
+            "type": "object",
+            "properties": {
+                "delete": {
+                    "type": "string",
+                    "example": "all articles have been successfully deleted"
                 }
             }
         }

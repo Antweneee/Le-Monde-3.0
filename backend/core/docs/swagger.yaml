@@ -1,20 +1,5 @@
 basePath: /api/v1
 definitions:
-  articles.Article:
-    properties:
-      content:
-        type: string
-      id:
-        type: integer
-      likes:
-        items:
-          type: integer
-        type: array
-      title:
-        type: string
-      userId:
-        type: integer
-    type: object
   articles.ArticleInput:
     properties:
       content:
@@ -25,11 +10,25 @@ definitions:
     - content
     - title
     type: object
-  articles.DeletedResponse:
+  articles.Bookmark:
     properties:
-      delete:
-        example: all articles have been successfully deleted
+      articles:
+        items:
+          type: integer
+        type: array
+      id:
+        type: integer
+      title:
         type: string
+      userId:
+        type: integer
+    type: object
+  articles.BookmarkInput:
+    properties:
+      title:
+        type: string
+    required:
+    - title
     type: object
   articles.LikesResponse:
     properties:
@@ -84,6 +83,48 @@ definitions:
         example: status bad request
         type: string
     type: object
+  main_router_articles.Article:
+    properties:
+      content:
+        type: string
+      id:
+        type: integer
+      likes:
+        items:
+          type: integer
+        type: array
+      title:
+        type: string
+      userId:
+        type: integer
+    type: object
+  main_router_articles.DeletedResponse:
+    properties:
+      delete:
+        example: all articles have been successfully deleted
+        type: string
+    type: object
+  main_router_bookmarks.Article:
+    properties:
+      content:
+        type: string
+      id:
+        type: integer
+      likes:
+        items:
+          type: integer
+        type: array
+      title:
+        type: string
+      userId:
+        type: integer
+    type: object
+  main_router_bookmarks.DeletedResponse:
+    properties:
+      delete:
+        example: all articles have been successfully deleted
+        type: string
+    type: object
 externalDocs:
   description: OpenAPI
   url: https://swagger.io/resources/open-api/
@@ -112,7 +153,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/articles.DeletedResponse'
+            $ref: '#/definitions/main_router_articles.DeletedResponse'
         "400":
           description: Bad Request
           schema:
@@ -134,7 +175,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/articles.Article'
+              $ref: '#/definitions/main_router_articles.Article'
             type: array
         "400":
           description: Bad Request
@@ -163,7 +204,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/articles.Article'
+            $ref: '#/definitions/main_router_articles.Article'
         "400":
           description: Bad Request
           schema:
@@ -191,7 +232,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/articles.Article'
+            $ref: '#/definitions/main_router_articles.Article'
         "400":
           description: Bad Request
           schema:
@@ -213,7 +254,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/articles.DeletedResponse'
+            $ref: '#/definitions/main_router_articles.DeletedResponse'
         "400":
           description: Bad Request
           schema:
@@ -234,7 +275,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/articles.Article'
+            $ref: '#/definitions/main_router_articles.Article'
         "400":
           description: Bad Request
           schema:
@@ -256,7 +297,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/articles.Article'
+            $ref: '#/definitions/main_router_articles.Article'
         "400":
           description: Bad Request
           schema:
@@ -298,7 +339,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/articles.Article'
+            $ref: '#/definitions/main_router_articles.Article'
         "400":
           description: Bad Request
           schema:
@@ -321,7 +362,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/articles.Article'
+              $ref: '#/definitions/main_router_articles.Article'
             type: array
         "400":
           description: Bad Request
@@ -333,6 +374,239 @@ paths:
             $ref: '#/definitions/http.HTTPError'
       tags:
       - articles
+  /bookmarks:
+    delete:
+      consumes:
+      - application/json
+      description: Delete the connected user bookmarks
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main_router_bookmarks.DeletedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+      tags:
+      - bookmarks
+    get:
+      consumes:
+      - application/json
+      description: Retrieve the connected user bookmarks
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/articles.Bookmark'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+      tags:
+      - bookmarks
+    post:
+      consumes:
+      - application/json
+      description: Add a bookmark
+      parameters:
+      - description: Params to create a bookmark
+        in: body
+        name: BookmarkInput
+        required: true
+        schema:
+          $ref: '#/definitions/articles.BookmarkInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/articles.Bookmark'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+      tags:
+      - bookmarks
+  /bookmarks/:id:
+    delete:
+      consumes:
+      - application/json
+      description: Delete the connected user bookmark
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main_router_bookmarks.DeletedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+      tags:
+      - bookmarks
+    get:
+      consumes:
+      - application/json
+      description: Retrieve the connected user bookmark
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/articles.Bookmark'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+      tags:
+      - bookmarks
+    put:
+      consumes:
+      - application/json
+      description: Edit a bookmark
+      parameters:
+      - description: Params to edit a bookmark
+        in: body
+        name: BookmarkInput
+        required: true
+        schema:
+          $ref: '#/definitions/articles.BookmarkInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/articles.Bookmark'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+      tags:
+      - bookmarks
+  /bookmarks/:id/articles:
+    delete:
+      consumes:
+      - application/json
+      description: Remove all articles of a bookmark
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/articles.Bookmark'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+      tags:
+      - bookmarks
+    get:
+      consumes:
+      - application/json
+      description: Retrieve the articles of a given bookmark
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main_router_bookmarks.Article'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+      tags:
+      - bookmarks
+  /bookmarks/:id/articles/:id-article:
+    post:
+      consumes:
+      - application/json
+      description: Add an article in a bookmark
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/articles.Bookmark'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+      tags:
+      - bookmarks
+  /bookmarks/:id/articles/id-article:
+    delete:
+      consumes:
+      - application/json
+      description: Remove an article of a bookmark
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/articles.Bookmark'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+      tags:
+      - bookmarks
   /login:
     post:
       consumes:
