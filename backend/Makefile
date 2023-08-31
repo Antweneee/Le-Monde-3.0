@@ -17,6 +17,8 @@ coverages:
 	cd articles ; go test -coverprofile=coverage.out ./... ;  go tool cover -html=coverage.out
 	cd bookmarks ; go test -coverprofile=coverage.out ./... ;  go tool cover -html=coverage.out
 
+doc:
+	cd core ; swag init ; go build ; ./main
 clean:
 	sudo rm -rf data
 	rm -rf core/coverage.out
