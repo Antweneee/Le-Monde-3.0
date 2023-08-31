@@ -3,6 +3,8 @@ package router
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	mw "main/middlewares"
 	adm "main/router/admin"
 	art "main/router/articles"
@@ -11,7 +13,7 @@ import (
 
 func Router() *gin.Engine {
 
-	r := gin.Default()
+	r := gin.New()
 
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:3000"},
@@ -21,6 +23,7 @@ func Router() *gin.Engine {
 		AllowCredentials: true,
 	}))
 
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	public := r.Group("/")
 	protected := r.Group("/")
 

@@ -1,0 +1,397 @@
+basePath: /api/v1
+definitions:
+  articles.Article:
+    properties:
+      content:
+        type: string
+      id:
+        type: integer
+      likes:
+        items:
+          type: integer
+        type: array
+      title:
+        type: string
+      userId:
+        type: integer
+    type: object
+  articles.ArticleInput:
+    properties:
+      content:
+        type: string
+      title:
+        type: string
+    required:
+    - content
+    - title
+    type: object
+  articles.DeletedResponse:
+    properties:
+      delete:
+        example: all articles have been successfully deleted
+        type: string
+    type: object
+  articles.LikesResponse:
+    properties:
+      accounts:
+        items:
+          type: integer
+        type: array
+      amount:
+        type: integer
+    type: object
+  articles.LoginInput:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  articles.LoginResponse:
+    properties:
+      token:
+        example: XXXXXXXXXXXXXXXXXXXX
+        type: string
+    type: object
+  articles.RegisterInput:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
+  articles.RegisterResponse:
+    properties:
+      created:
+        example: User created successfully
+        type: string
+    type: object
+  http.HTTPError:
+    properties:
+      code:
+        example: 400
+        type: integer
+      message:
+        example: status bad request
+        type: string
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server celler server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Swagger Example API
+  version: "1.0"
+paths:
+  /articles:
+    delete:
+      consumes:
+      - application/json
+      description: Delete all the connected user articles
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/articles.DeletedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+      tags:
+      - articles
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all articles
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/articles.Article'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+      tags:
+      - articles
+    post:
+      consumes:
+      - application/json
+      description: Add an article
+      parameters:
+      - description: Params to create an article
+        in: body
+        name: ArticleInput
+        required: true
+        schema:
+          $ref: '#/definitions/articles.ArticleInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/articles.Article'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+      tags:
+      - articles
+    put:
+      consumes:
+      - application/json
+      description: Edit an article
+      parameters:
+      - description: Params to edit an article
+        in: body
+        name: ArticleInput
+        required: true
+        schema:
+          $ref: '#/definitions/articles.ArticleInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/articles.Article'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+      tags:
+      - articles
+  /articles/:id:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an article
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/articles.DeletedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+      tags:
+      - articles
+    get:
+      consumes:
+      - application/json
+      description: Retrieve an article
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/articles.Article'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+      tags:
+      - articles
+  /articles/:id/likes:
+    delete:
+      consumes:
+      - application/json
+      description: Remove a like from an article
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/articles.Article'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+      tags:
+      - articles
+    get:
+      consumes:
+      - application/json
+      description: Retrieve likes information related to an article
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/articles.LikesResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+      tags:
+      - articles
+    post:
+      consumes:
+      - application/json
+      description: Add a like to an article
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/articles.Article'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+      tags:
+      - articles
+  /articles/me:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve connected user articles
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/articles.Article'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+      tags:
+      - articles
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Get an authentication token
+      parameters:
+      - description: Params to login to account
+        in: body
+        name: LoginInput
+        required: true
+        schema:
+          $ref: '#/definitions/articles.LoginInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/articles.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+      tags:
+      - authentication
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Create a user
+      parameters:
+      - description: Params to create an account
+        in: body
+        name: RegisterInput
+        required: true
+        schema:
+          $ref: '#/definitions/articles.RegisterInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/articles.RegisterResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.HTTPError'
+      tags:
+      - authentication
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"

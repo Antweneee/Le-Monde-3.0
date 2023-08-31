@@ -40,7 +40,7 @@ func AddUser(email string, username string, password string, c *gin.Context, db 
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": result.Error})
 	} else {
-		c.JSON(http.StatusCreated, gin.H{"Created": "User created successfully"})
+		c.JSON(http.StatusCreated, gin.H{"created": "User created successfully"})
 	}
 }
 

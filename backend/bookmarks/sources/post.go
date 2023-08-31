@@ -48,7 +48,7 @@ func AddBookmark(c *gin.Context, db *gorm.DB) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": result.Error})
 		return
 	}
-	c.JSON(http.StatusCreated, gin.H{"Created": "Bookmark created successfully"})
+	c.JSON(http.StatusCreated, bookmark)
 }
 
 func AddArticleInBookmark(c *gin.Context, db *gorm.DB) {
@@ -57,12 +57,6 @@ func AddArticleInBookmark(c *gin.Context, db *gorm.DB) {
 	userId, err := getUserId(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	newArticle := new(TitleArticle)
-	if err := c.ShouldBindJSON(&newArticle); err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 	bookmarkId, err := strconv.ParseInt(c.Param("id"), 10, 64)

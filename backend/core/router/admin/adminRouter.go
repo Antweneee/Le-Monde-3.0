@@ -7,5 +7,6 @@ import (
 func ApplyAdminRoutes(public *gin.RouterGroup) {
 
 	public.POST("/register", Register)
+
 	public.POST("/login", Login)
 }
