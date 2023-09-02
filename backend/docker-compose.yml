@@ -1,0 +1,41 @@
+version: "3"
+
+services:
+  core:
+    container_name : core-lemonde3-0
+    build:
+      context: core
+    ports:
+      - 8080:8080
+  admin:
+    container_name : admin-lemonde3-0
+    build:
+      context: admin
+    ports:
+      - 8081:8081
+  articles:
+    container_name : articles-lemonde3-0
+    build:
+      context: articles
+    ports:
+      - 8082:8082
+  topics:
+    container_name : topics-lemonde3-0
+    build:
+      context: topics
+    ports:
+      - 8083:8083
+  bookmarks:
+    container_name : bookmarks-lemonde3-0
+    build:
+      context: bookmarks
+    ports:
+      - 8084:8084
+  ipfs:
+    container_name: ipfs
+    image: ipfs/go-ipfs
+    volumes:
+      - ./data/ipfs:/data/ipfs
+    ports:
+      - 4001:4001
+      - 5001:5001
